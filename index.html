@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alaina and the Big Mystery - Interactive Book Reader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .book-viewer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            background: #f8f9fa;
+            min-height: 600px;
+        }
+
+        .book-page {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .page-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-top: 15px;
+        }
+
+        .page-slider-container {
+            width: 100%;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .page-slider {
+            width: 200px;
+            height: 6px;
+            cursor: pointer;
+        }
+
+        .slider-label {
+            font-size: 12px;
+            color: #666;
+            min-width: 40px;
+        }
+
+        .info-panel {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+            width: 100%;
+        }
+
+        .info-panel strong {
+            color: #667eea;
+        }
+
+        .keyboard-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .book-viewer {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .controls {
+                gap: 8px;
+            }
+
+            button {
+                padding: 10px 16px;
+                font-size: 12px;
+            }
+
+            .page-slider {
+                width: 150px;
+            }
+        }
+
+        .fullscreen-btn {
+            background: #4CAF50;
+        }
+
+        .fullscreen-btn:hover {
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📖 Alaina and the Big Mystery</h1>
+            <p>Book 1 of the Alaina Adventure Series</p>
+        </div>
+
+        <div class="book-viewer">
+            <div class="book-page">
+                <img id="pageImage" class="page-image" src="" alt="Book Page">
+            </div>
+
+            <div class="page-info">
+                <span id="pageNumber">Page 1 of 28</span>
+            </div>
+
+            <div class="page-slider-container">
+                <span class="slider-label">1</span>
+                <input type="range" id="pageSlider" class="page-slider" min="1" max="28" value="1">
+                <span class="slider-label">28</span>
+            </div>
+
+            <div class="controls">
+                <button id="prevBtn" onclick="previousPage()">← Previous</button>
+                <button id="firstBtn" onclick="goToFirstPage()">First</button>
+                <button id="lastBtn" onclick="goToLastPage()">Last</button>
+                <button id="nextBtn" onclick="nextPage()">Next →</button>
+                <button id="fullscreenBtn" class="fullscreen-btn" onclick="toggleFullscreen()">⛶ Fullscreen</button>
+            </div>
+
+            <div class="info-panel">
+                <strong>📚 How to Use:</strong> Use arrow keys (← →) or click buttons to turn pages. 
+                Press spacebar to go to next page. Click on slider to jump to any page.
+            </div>
+
+            <div class="keyboard-hint">
+                ⌨️ Keyboard shortcuts: ← → (previous/next) | Space (next) | Home (first) | End (last)
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // All 28 individual pages
+        const pages = [
+            { num: 1, image: 'images/Page_1.png' },
+            { num: 2, image: 'images/Page_2.png' },
+            { num: 3, image: 'images/page_3.png' },
+            { num: 4, image: 'images/page_4.png' },
+            { num: 5, image: 'images/Page_5.png' },
+            { num: 6, image: 'images/Page_6.png' },
+            { num: 7, image: 'images/Page_7.png' },
+            { num: 8, image: 'images/Page_8.png' },
+            { num: 9, image: 'images/page_9.png' },
+            { num: 10, image: 'images/Page_10.png' },
+            { num: 11, image: 'images/page_11.png' },
+            { num: 12, image: 'images/page_12.png' },
+            { num: 13, image: 'images/page_13.png' },
+            { num: 14, image: 'images/page_14.png' },
+            { num: 15, image: 'images/page_15.png' },
+            { num: 16, image: 'images/page_16.png' },
+            { num: 17, image: 'images/page_17.png' },
+            { num: 18, image: 'images/page_18.png' },
+            { num: 19, image: 'images/page_19.png' },
+            { num: 20, image: 'images/page_20.png' },
+            { num: 21, image: 'images/page_21.png' },
+            { num: 22, image: 'images/page_22.png' },
+            { num: 23, image: 'images/page_23.png' },
+            { num: 24, image: 'images/page_24.png' },
+            { num: 25, image: 'images/page_25.png' },
+            { num: 26, image: 'images/page_26.png' },
+            { num: 27, image: 'images/page_27.png' },
+            { num: 28, image: 'images/page_28.png' }
+        ];
+
+        let currentPageIndex = 0;
+
+        function displayPage(index) {
+            if (index < 0 || index >= pages.length) return;
+            
+            currentPageIndex = index;
+            const page = pages[index];
+            
+            document.getElementById('pageImage').src = page.image;
+            document.getElementById('pageNumber').textContent = `Page ${page.num} of ${pages.length}`;
+            document.getElementById('pageSlider').value = page.num;
+            
+            document.getElementById('prevBtn').disabled = index === 0;
+            document.getElementById('firstBtn').disabled = index === 0;
+            document.getElementById('nextBtn').disabled = index === pages.length - 1;
+            document.getElementById('lastBtn').disabled = index === pages.length - 1;
+        }
+
+        function nextPage() {
+            if (currentPageIndex < pages.length - 1) {
+                displayPage(currentPageIndex + 1);
+            }
+        }
+
+        function previousPage() {
+            if (currentPageIndex > 0) {
+                displayPage(currentPageIndex - 1);
+            }
+        }
+
+        function goToFirstPage() {
+            displayPage(0);
+        }
+
+        function goToLastPage() {
+            displayPage(pages.length - 1);
+        }
+
+        function goToPage(pageNum) {
+            const index = pageNum - 1;
+            if (index >= 0 && index < pages.length) {
+                displayPage(index);
+            }
+        }
+
+        function toggleFullscreen() {
+            const elem = document.querySelector('.book-page');
+            if (!document.fullscreenElement) {
+                elem.requestFullscreen().catch(err => {
+                    alert(`Error: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft') previousPage();
+            if (e.key === ' ') {
+                e.preventDefault();
+                nextPage();
+            }
+            if (e.key === 'Home') goToFirstPage();
+            if (e.key === 'End') goToLastPage();
+        });
+
+        // Slider control
+        document.getElementById('pageSlider').addEventListener('input', (e) => {
+            goToPage(parseInt(e.target.value));
+        });
+
+        // Initialize
+        displayPage(0);
+
+        // Preload images for smoother navigation
+        pages.forEach(page => {
+            const img = new Image();
+            img.src = page.image;
+        });
+    </script>
+</body>
+</html>
